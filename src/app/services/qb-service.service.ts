@@ -6,8 +6,8 @@ import { Injectable } from '@angular/core';
 })
 export class QbServiceService {
 
-  private apiUrl = 'http://localhost:3000';
-  private examlyApiUrl = 'https://api.examly.io/api/v2/questionbanks'; // adjust as needed
+  // private apiUrl = 'http://localhost:3000';
+  private apiUrl = 'https://metadata-mapping-backend.onrender.com';
 
   constructor(private http: HttpClient) {}
 
