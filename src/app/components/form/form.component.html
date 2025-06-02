@@ -1,0 +1,174 @@
+<div class="qb-container">
+    <h1 class="title fade-in">MetaData Mapping</h1>
+  <!-- Auth Token Input -->
+  <div class="card fade-in">
+    <div class="form-group">
+      <label>Auth Token:</label>
+      <input 
+        type="text" 
+        class="form-control" 
+        [(ngModel)]="token" 
+        placeholder="Enter your authentication token" />
+    </div>
+  <!-- </div> -->
+
+  <!-- Search Section -->
+  <div class="card fade-in">
+    <div class="search-section">
+      <div class="search-input-group">
+        <div class="form-group">
+          <label>Search Question Banks:</label>
+          <input
+            type="text"
+            class="form-control"
+            [(ngModel)]="searchText"
+            placeholder="Search question banks by name..." />
+        </div>
+      </div>
+      <button class="btn btn-primary" (click)="onSearch()">
+        🔍
+      </button>
+    </div>
+    <div *ngIf="filteredQuestionBanks.length > 0" >
+    <div class="filter-section">
+      <label>Filter by Created By:</label>
+      <select class="filter-select" [(ngModel)]="selectedCreator" (change)="filterByCreator()">
+        <option value="">All Creators</option>
+        <option *ngFor="let creator of uniqueCreators" [value]="creator">
+          {{ creator }}
+        </option>
+      </select>
+    </div>
+  </div>
+    </div>
+
+    <div *ngIf="searchLoading" class="loading">
+      <p>Searching question banks...</p>
+    </div>
+  </div>
+
+  <!-- Filter Section -->
+  <!-- <div *ngIf="filteredQuestionBanks.length > 0" class="card fade-in">
+    <div class="filter-section">
+      <label>Filter by Created By:</label>
+      <select class="filter-select" [(ngModel)]="selectedCreator" (change)="filterByCreator()">
+        <option value="">All Creators</option>
+        <option *ngFor="let creator of uniqueCreators" [value]="creator">
+          {{ creator }}
+        </option>
+      </select>
+    </div>
+  </div> -->
+
+  <!-- Question Banks Table -->
+  <div *ngIf="filteredQuestionBanks.length > 0" class="card fade-in">
+    <div class="table-container">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Question Bank Name</th>
+            <th>Question Count</th>
+            <th>Created By</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            *ngFor="let qb of filteredQuestionBanks"
+            [class.selected]="qb.qb_id === selectedQbId">
+            <td>
+              <strong>{{ qb.qb_name }}</strong>
+            </td>
+            <td>
+              <span class="question-count">{{ qb.questionCount || 'N/A' }}</span>
+            </td>
+            <td>{{ qb.createdBy || 'N/A' }}</td>
+            <td>
+              <button class="btn btn-secondary" (click)="selectQB(qb)">
+                Select
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Selected QB Status -->
+  <div *ngIf="selectedQbId" class="card fade-in">
+    <div class="status-message status-selected">
+     
+    <!-- </div> -->
+    <button class="btn btn-success" (click)="submitSelectedQB()">
+      🚀 Submit Selected Question Bank
+    </button>
+     ✅ Selected Question Bank ID: <strong>{{ selectedQbId }}</strong>
+</div>
+  </div>
+
+  <!-- Mapping Loading -->
+  <div *ngIf="mappingLoading" class="card fade-in">
+    <div class="loading">
+      <p>Processing questions and updating mappings...</p>
+    </div>
+  </div>
+
+  <!-- Updated Questions Results -->
+  <div *ngIf="updatedQuestions.length > 0" class="card fade-in results-section">
+    <h3 class="results-title success">✅ Successfully Updated Questions</h3>
+    <div class="table-container success-table">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Question Number</th>
+            <th>Question Type</th>
+            <!-- <th>Question ID</th> -->
+            <th>SubTopic-Topic-Subject</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let q of updatedQuestions">
+            <td><strong>Q{{ q.questionNumber }}</strong></td>
+            <td>
+              <span 
+                class="question-type-badge"
+                [ngClass]="{
+                  'question-type-mcq': q.question_type?.toLowerCase().includes('mcq'),
+                  'question-type-essay': q.question_type?.toLowerCase().includes('programming'),
+                  'question-type-true-false': q.question_type?.toLowerCase().includes('project')
+                }">
+                {{ q.question_type }}
+              </span>
+            </td>
+            <!-- <td><code>{{ q.q_id }}</code></td> -->
+            <td>
+              <span class="mapping-info">
+                {{ q.sub_topic_name }} - {{ q.topic_name }} - {{ q.subject_name }}
+              </span>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Not Updated Questions Results -->
+  <div *ngIf="notUpdatedQuestions.length > 0" class="card fade-in results-section">
+    <h3 class="results-title warning">⚠️ Questions Not Updated</h3>
+    <div class="table-container warning-table">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Question ID</th>
+            <th>Reason</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let q of notUpdatedQuestions">
+            <td><code>{{ q.q_id }}</code></td>
+            <td>{{ q.reason || 'Unknown reason' }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
