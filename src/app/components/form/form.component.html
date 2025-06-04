@@ -122,8 +122,9 @@
           <tr>
             <th>Question Number</th>
             <th>Question Type</th>
-            <!-- <th>Question ID</th> -->
+            <th>Question</th>
             <th>SubTopic-Topic-Subject</th>
+            <th>AI match %</th>
           </tr>
         </thead>
         <tbody>
@@ -140,11 +141,25 @@
                 {{ q.question_type }}
               </span>
             </td>
+            <td>
+              <a href="#" (click)="openQuestionModal(q.upload_question.question_data)" class="show-question-link">Ques</a>
+            </td>
             <!-- <td><code>{{ q.q_id }}</code></td> -->
             <td>
               <span class="mapping-info">
                 {{ q.sub_topic_name }} - {{ q.topic_name }} - {{ q.subject_name }}
               </span>
+            </td>
+            <td>
+              <span 
+                class="question-type-badge"
+                [ngClass]="{
+                  'score90': q.score > 0.83,
+                  'score60': q.score > 0.6 && q.score < 0.83,
+                }">
+                {{ q.score * 100 | number:'1.0-0' }}%
+              </span>
+            </td>
           </tr>
         </tbody>
       </table>
@@ -158,17 +173,50 @@
       <table class="data-table">
         <thead>
           <tr>
-            <th>Question ID</th>
+            <th>Question Number</th>
+            <th>Question Type</th>
+            <th>Question</th>
+            <th>SubTopic-Topic-Subject</th>
             <th>Reason</th>
           </tr>
         </thead>
         <tbody>
           <tr *ngFor="let q of notUpdatedQuestions">
-            <td><code>{{ q.q_id }}</code></td>
+            <td><strong>Q{{ q.questionNumber }}</strong></td>
+            <td>
+              <span 
+                class="question-type-badge"
+                [ngClass]="{
+                  'question-type-mcq': q.question_type?.toLowerCase().includes('mcq'),
+                  'question-type-essay': q.question_type?.toLowerCase().includes('programming'),
+                  'question-type-true-false': q.question_type?.toLowerCase().includes('project')
+                }">
+                {{ q.question_type }}
+              </span>
+            </td>
+            <td>
+              <a href="#" (click)="openQuestionModal(q.upload_question.question_data)" class="show-question-link">Ques</a>
+            </td>
+
+            <td>
+              <span class="mapping-info">
+                {{ q.sub_topic_name }} - {{ q.topic_name }} - {{ q.subject_name }}
+              </span>
+            </td>
             <td>{{ q.reason || 'Unknown reason' }}</td>
           </tr>
         </tbody>
       </table>
     </div>
   </div>
+  <!-- Question Modal -->
+<div class="modal-backdrop" *ngIf="selectedQuestion">
+  <div class="modal-content">
+    <button class="close-button" (click)="selectedQuestion = null">✖</button>
+    <h3>Question Details</h3>
+        <div [innerHTML]="selectedQuestion" class="question-html"></div>
+
+  </div>
+</div>
+
 </div>

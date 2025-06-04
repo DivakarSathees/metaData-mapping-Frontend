@@ -87,15 +87,15 @@ filterByCreator() {
       next: (res: MatchMetadataResponse) => {
         const updateResults = res.updateResults;
 
-        if (updateResults?.success) {
-          console.log(updateResults.message);
-          this.updatedQuestions = updateResults.results?.updated || [];
-          this.notUpdatedQuestions = updateResults.results?.notUpdated || [];
+        // if (updateResults?.success) {
+          console.log(updateResults?.message);
+          this.updatedQuestions = updateResults?.results?.updated || [];
+          this.notUpdatedQuestions = updateResults?.results?.notUpdated || [];
           this.mappingLoading = false;
-        } else {
-          console.error('Update failed:', updateResults?.message);
-          this.mappingLoading = false;
-        }
+        // } else {
+        //   console.error('Update failed:', updateResults?.message);
+        //   this.mappingLoading = false;
+        // }
       },
       error: (err) => {
         console.error('Error sending QB ID:', err) 
@@ -104,4 +104,16 @@ filterByCreator() {
 
     });
   }
+  selectedQuestion: any = null;
+
+openQuestionModal(q: any): void {
+  // const cleanQuestion = {
+  //   question_data: q?.replace(/\$\$\$examly/g, '')
+  // };
+  if(q.includes('$$$examly')){
+    this.selectedQuestion = q?.replace(/\$\$\$examly/g, '');
+  } else {
+    this.selectedQuestion = q
+  }
+}
 }
